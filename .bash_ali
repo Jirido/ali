@@ -1,0 +1,55 @@
+# ad 'source ~/.bash_ali'  and 'source ~/.bash_aliases' or what ever you want to call this files to bashrc
+# To add an alias, write ali and folow on or eventualy write 'ali alias command enter'. 
+# To see what aliases have been added write alix.
+
+# The ali funktion.
+
+ali () {
+if  (($#>=2)); then
+printf "alias %s='%s'\n" "$1" "${*:2}" >> ~/.bash_aliases
+printf '%s=%s\n' "$1" "${*:2}" >> ~/.bash_alix; . ~/.bashrc;
+echo "Ok! The alias $1='${*:2}' was written to .bash_aliases"
+else
+echo -e "What command is it you want to make an alias for:  \c "
+read  word1
+echo
+echo -e "Wath do you want the alias for $word1 to be? .. \c "
+read word2
+echo
+echo  -e "Do you want us to write the alias: $word2='$word1' in bash_aliases?  y ? \c "
+read word3
+if [ $word3 = y ] ; then
+echo "alias $word2='$word1'" >> ~/.bash_aliases
+echo "$word2=$word1" >> ~/.bash_alix
+ . ~/.bashrc
+echo
+echo "It is done! The alias $word2='$word1' was written to .bash_aliases" 
+echo
+echo "Fastest way though is to write:   ali TheAlias TheCommand   and hit enter"
+else 
+echo
+echo " Ok! we dropped it. "
+echo " Run "ali" again if you like to continue to add aliases :) "
+echo
+echo "  *** Fastest way though is to write:   ali TheAlias TheCommand   and hit enter ***"
+fi
+fi
+}
+
+# The alix function alix to read all the aliases in ~/bash_alix that is without the '' around the command strings.
+# the real aliases is in ~/bash_aliases so when removing you have to remove the alias in them both. Alix could be rewritten to strip the '' from the aliases in ~/.bash_alaises so we could get rid of the file ~/.bash_alix all together. I'm just not cut out for it.
+# Also it would then be easier to make an delete funktion. I know i'm bad. 
+# I would also love a cind of search funktion to use when looking for the alias to delete. I would like a self updating list of matches from ~/bash_aliases. Like.. i write delali and then it asks me what alias i would like to delete and narow the list as i write. 
+# It could match both the alias and the command string. That would be sweet. Also warn if i try to ad a alias already in the alias file.
+alix () { if  (($#>=1)); then
+read adrs1
+( IFS=$'\n'; select _ in $(<$adrs1);do break;done </dev/null 2>&1 | sed \$d )
+else 
+( IFS=$'\n'; select _ in $(<~/.bash_alix);do break;done </dev/null 2>&1 | sed \$d )
+fi
+}
+
+# Add bashrc_aliases.
+if [ -f ~/.bash_aliases ]; then
+    source ~/.bash_aliases
+fi
